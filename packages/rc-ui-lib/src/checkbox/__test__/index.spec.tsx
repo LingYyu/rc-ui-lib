@@ -297,4 +297,26 @@ describe('Checkbox.Group', () => {
     await sleep(0);
     expect(onChange).toBeCalledWith(['a', 'b']);
   });
+
+  it('should toggle when checked ', async () => {
+    const onChange = jest.fn();
+    const { container } = render(
+      <Checkbox.Group value={['a']} onChange={onChange}>
+        <Checkbox name="a">选项一</Checkbox>
+        <Checkbox name="b">选项二</Checkbox>
+      </Checkbox.Group>,
+    );
+
+    const icons = container.querySelectorAll('.rc-checkbox__icon');
+    await fireEvent.click(icons[1]);
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+  it('should return when child not checkbox ', async () => {
+    const { container } = render(
+      <Checkbox.Group>
+        <div>选项一</div>
+      </Checkbox.Group>,
+    );
+    expect(container).toMatchSnapshot();
+  });
 });

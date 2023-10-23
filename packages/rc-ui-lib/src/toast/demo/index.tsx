@@ -6,7 +6,6 @@ import Toast from '..';
 
 export default (): React.ReactNode => {
   const { DemoBlock, DemoSection } = components;
-
   const onDynicUpdate = () => {
     let remain = 4;
     let timer;
@@ -60,6 +59,7 @@ export default (): React.ReactNode => {
             Toast({
               message: '自定义图片',
               icon: 'https://rancui.github.io/rc-ui-lib/rc-ui-lib.png',
+              duration: 0,
             })
           }
         />

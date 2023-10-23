@@ -204,3 +204,15 @@ exports[`Checkbox.Group renders correctly 1`] = `
   </div>
 </div>
 `;
+
+exports[`Checkbox.Group should return when child not checkbox  1`] = `
+<div>
+  <div
+    class="rc-checkbox-group"
+  >
+    <div>
+      选项一
+    </div>
+  </div>
+</div>
+`;

@@ -20,7 +20,7 @@ describe('Collapse', () => {
   // it('should update value when title is clicked', async () => {
   //   const onChange = jest.fn();
   //   const { container } = render(
-  //     <Collapse value={[]} initValue="1" onChange={onChange}>
+  //     <Collapse value={[]} onChange={onChange}>
   //       <Collapse.Item title="标题1" name="first">
   //         内容
   //       </Collapse.Item>
@@ -29,8 +29,9 @@ describe('Collapse', () => {
   //       </Collapse.Item>
   //     </Collapse>,
   //   );
-  //   const title = container.querySelector(Cell).children('.rc-collapse-item__title');
-  //   await title.simulate('click');
+
+  //   const title = container.querySelector('.rc-cell.rc-collapse-item__title');
+  //   await fireEvent.click(title);
   //   expect(onChange).toHaveBeenCalledWith(['first']);
   // });
 
@@ -152,7 +153,7 @@ describe('Collapse', () => {
   it('should be readonly when using disabled prop', async () => {
     const onChange = jest.fn();
     const { container } = render(
-      <Collapse initValue="" onChange={onChange}>
+      <Collapse initValue={[]} accordion onChange={onChange}>
         <Collapse.Item title="标题1" name="first" disabled>
           内容
         </Collapse.Item>
@@ -163,7 +164,7 @@ describe('Collapse', () => {
     expect(onChange).not.toHaveBeenCalled();
     expect(container.querySelector('.rc-collapse-item__title--disabled')).toBeTruthy();
     expect(spyConsole).toHaveBeenCalledWith(
-      '[rc-ui-lib] Collapse: "value" should be Array in non-accordion mode',
+      '[rc-ui-lib] Collapse: "value" should not be Array in accordion mode',
     );
   });
 
@@ -188,5 +189,47 @@ describe('Collapse', () => {
     );
     // expect(wrapper.props().value).toEqual('first');
     expect(container).toMatchSnapshot();
+  });
+  it('render item without parent', async () => {
+    const { container } = render(
+      <Collapse.Item title="标题1" name="first" icon="shop-o" value="first">
+        内容
+      </Collapse.Item>,
+    );
+    await act(() => {
+      jest.useRealTimers();
+    });
+    expect(container.querySelector('.rc-collapse-item__title--expanded')).toBeFalsy();
+  });
+  it('should update value when value is set', async () => {
+    const TestComponent = () => {
+      const [value, setValue] = React.useState(['1']);
+      React.useEffect(() => {
+        setTimeout(() => setValue(['2']), 1);
+      }, []);
+
+      return (
+        <Collapse value={value}>
+          <Collapse.Item title="标题1" name="1">
+            代码是写出来给人看的，附带能在机器上运行
+          </Collapse.Item>
+          <Collapse.Item title="标题2" name="2">
+            代码是写出来给人看的，附带能在机器上运行
+          </Collapse.Item>
+          <Collapse.Item title="标题3" name="3">
+            代码是写出来给人看的，附带能在机器上运行
+          </Collapse.Item>
+        </Collapse>
+      );
+    };
+    const { container } = render(<TestComponent />);
+
+    await act(() => {
+      jest.useRealTimers();
+    });
+
+    expect(
+      container.querySelector('.rc-collapse-item__title--expanded .rc-cell__title').textContent,
+    ).toEqual('标题2');
   });
 });

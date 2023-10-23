@@ -30,16 +30,23 @@ describe('FloatingBubble', () => {
   it('should render correctly when offset set', async () => {
     const restore = mockGetBoundingClientRect({ width: 48, height: 48 });
     const root = document.createElement('div');
-    render(<FloatingBubble icon="chat-o" teleport={root} offset={{ x: 100, y: 100 }} />);
+    render(<FloatingBubble icon="chat-o" axis="xy" teleport={root} offset={{ x: 10, y: 10 }} />);
     const floatingBubbleEl = root.querySelector<HTMLDivElement>('.rc-floating-bubble')!;
-    await sleep(10);
-
-    expect(floatingBubbleEl.style.transform).toEqual(`translate3d(${100}px, ${100}px, 0)`);
-
-    await TestsEvent.triggerDrag(floatingBubbleEl, [24, 1000]);
-    expect(floatingBubbleEl.style.transform).toEqual(
-      `translate3d(${100}px, ${window.innerHeight - 48 - 24}px, 0)`,
-    );
+    await waitFor(() => {
+      expect(floatingBubbleEl.style.transform).toEqual(`translate3d(${10}px, ${10}px, 0)`);
+    });
+    await act(async () => {
+      await TestsEvent.triggerDrag(floatingBubbleEl, [11, 1000]);
+    });
+    await sleep(400);
+    await act(() => {
+      jest.useRealTimers();
+    });
+    await waitFor(() => {
+      expect(floatingBubbleEl.style.transform).toEqual(
+        `translate3d(${24}px, ${window.innerHeight - 48 - 24}px, 0)`,
+      );
+    });
     restore();
   });
   it('should only y axis direction move when axis is default', async () => {
@@ -87,10 +94,10 @@ describe('FloatingBubble', () => {
     render(<FloatingBubble icon="chat-o" axis="xy" teleport={root} />);
     const floatingBubbleEl = root.querySelector<HTMLDivElement>('.rc-floating-bubble')!;
     await act(async () => {
-      await TestsEvent.triggerDrag(floatingBubbleEl, [-100, -100]);
+      await TestsEvent.triggerDrag(floatingBubbleEl, [-100, -1000]);
     });
     expect(floatingBubbleEl.style.transform).toEqual(
-      `translate3d(${window.innerWidth - 48 - 24}px, ${window.innerHeight - 48 - 24 - 100}px, 0)`,
+      `translate3d(${window.innerWidth - 48 - 24}px, ${24}px, 0)`,
     );
     restore();
   });

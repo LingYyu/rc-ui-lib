@@ -29,7 +29,7 @@ const CollapseItem = forwardRef<CollapseItemInstance, CollapseItemProps>((props,
   const name = useMemo(() => props.name ?? index, [props.name]);
 
   const expanded = useMemo(() => {
-    if (parent) {
+    if (parent?.isExpanded) {
       return parent.isExpanded(name);
     }
     return null;
