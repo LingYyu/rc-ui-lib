@@ -101,6 +101,10 @@ export default {
                 path: 'toast',
                 title: 'Toast 轻提示',
               },
+              {
+                path: 'space',
+                title: 'Space 间距',
+              },
             ],
           },
           {
